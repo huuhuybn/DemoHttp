@@ -33,8 +33,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 tvResult.setText("Loading...");
-                GetHttpTask getHttpTask = new GetHttpTask(tvResult);
-                getHttpTask.execute(url);
+//                GetHttpTask getHttpTask = new GetHttpTask(tvResult);
+//                getHttpTask.execute(url);
+
+                PostHttpTask postHttpTask = new PostHttpTask(tvResult);
+                postHttpTask.execute(url);
 
 
             }

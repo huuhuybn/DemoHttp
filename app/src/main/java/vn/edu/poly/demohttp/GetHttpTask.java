@@ -49,7 +49,6 @@ public class GetHttpTask extends AsyncTask<String, Long, String> {
             e.printStackTrace();
         }
 
-
         return null;
     }
 
