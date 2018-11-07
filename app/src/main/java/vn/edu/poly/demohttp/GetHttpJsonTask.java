@@ -4,6 +4,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetHttpTask extends AsyncTask<String, Long, String> {
+public class GetHttpJsonTask extends AsyncTask<String, Long, String> {
 
 
     TextView tvResult;
@@ -35,7 +40,7 @@ public class GetHttpTask extends AsyncTask<String, Long, String> {
 
     OnLoadCompletedListener onLoadCompletedListener;
 
-    public GetHttpTask(TextView tvResult) {
+    public GetHttpJsonTask(TextView tvResult) {
         this.tvResult = tvResult;
     }
 
@@ -79,44 +84,43 @@ public class GetHttpTask extends AsyncTask<String, Long, String> {
         Log.e("DATA", s);
         if (s != null) {
 
-            try {
-                JSONObject root = new JSONObject(s);
-                JSONArray hd_wallpaper = root.getJSONArray("HD_WALLPAPER");
 
-                for (int i = 0; i < hd_wallpaper.length() - 1; i++) {
+            JsonParser jsonParser = new JsonParser();
 
-                    JSONObject item = hd_wallpaper.getJSONObject(i);
-                    String id = item.getString("id");
-                    String cat_id = item.getString("cat_id");
-                    String wallpaper_image = item.getString("wallpaper_image");
-                    String wallpaper_image_thumb = item.getString("wallpaper_image_thumb");
-                    String total_views = item.getString("total_views");
-                    String cid = item.getString("cid");
-                    String category_name = item.getString("category_name");
-                    String category_image = item.getString("category_image");
-                    String category_image_thumb = item.getString("category_image_thumb");
+            JsonObject root = jsonParser.parse(s).getAsJsonObject();
 
+            JsonArray hd_wallpaper = root.get("HD_WALLPAPER").getAsJsonArray();
 
-                    Item item_ = new Item();
-                    item_.id = id;
-                    item_.cat_id = cat_id;
-                    item_.wallpaper_image = wallpaper_image;
-                    item_.wallpaper_image_thumb = wallpaper_image_thumb;
-                    item_.total_views = total_views;
-                    item_.cid = cid;
-                    item_.category_name = category_name;
-                    item_.category_image = category_image;
-                    item_.category_image_thumb = category_image_thumb;
+            for (int i = 0; i < hd_wallpaper.size(); i++) {
 
-                    items.add(item_);
+                JsonObject item = hd_wallpaper.get(i).getAsJsonObject();
 
-                }
-                onLoadCompletedListener.onCompleted(items);
+                String id = item.get("id").getAsString();
+                String cat_id = item.get("cat_id").getAsString();
+                String wallpaper_image = item.get("wallpaper_image").getAsString();
+                String wallpaper_image_thumb = item.get("wallpaper_image_thumb").getAsString();
+                String total_views = item.get("total_views").getAsString();
+                String cid = item.get("cid").getAsString();
+                String category_name = item.get("category_name").getAsString();
+                String category_image = item.get("category_image").getAsString();
+                String category_image_thumb = item.get("category_image_thumb").getAsString();
 
+                Item item_ = new Item();
+                item_.id = id;
+                item_.cat_id = cat_id;
+                item_.wallpaper_image = wallpaper_image;
+                item_.wallpaper_image_thumb = wallpaper_image_thumb;
+                item_.total_views = total_views;
+                item_.cid = cid;
+                item_.category_name = category_name;
+                item_.category_image = category_image;
+                item_.category_image_thumb = category_image_thumb;
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                items.add(item_);
+
             }
+
+            onLoadCompletedListener.onCompleted(items);
 
 
         }
